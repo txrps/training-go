@@ -1,0 +1,78 @@
+#:schema https://json.schemastore.org/any.json
+
+env_files = []
+root = "."
+testdata_dir = "testdata"
+tmp_dir = "tmp"
+
+[build]
+  args_bin = []
+
+  # ✅ แยก swag ออกจาก build (กัน silent fail)
+  pre_cmd = ["swag init -g ./cmd/api/main.go"]
+
+  # ✅ build อย่างเดียว
+  cmd = "go build -o ./tmp/main.exe ./cmd/api"
+
+  # ✅ binary ที่จะรัน
+  bin = "tmp\\main.exe"
+  entrypoint = ["tmp\\main.exe"]
+
+  delay = 1000
+
+  # 🔥 กัน loop จาก swagger docs
+  exclude_dir = ["assets", "tmp", "vendor", "testdata", "docs"]
+
+  exclude_file = []
+  exclude_regex = ["_test.go"]
+  exclude_unchanged = false
+  follow_symlink = false
+  full_bin = ""
+  ignore_dangerous_root_dir = false
+
+  include_dir = []
+  include_ext = ["go", "tpl", "tmpl", "html"]
+  include_file = []
+
+  kill_delay = "0s"
+
+  # ✅ ดู error ชัด ๆ
+  log = "build-errors.log"
+
+  poll = false
+  poll_interval = 0
+
+  post_cmd = []
+
+  rerun = false
+  rerun_delay = 500
+
+  send_interrupt = false
+
+  # 🔥 สำคัญมาก: ถ้า build fail → ห้าม run binary เก่า
+  stop_on_error = true
+
+[color]
+  app = ""
+  build = "yellow"
+  main = "magenta"
+  runner = "green"
+  watcher = "cyan"
+
+[log]
+  main_only = false
+  silent = false
+  time = false
+
+[misc]
+  clean_on_exit = false
+
+[proxy]
+  app_port = 0
+  app_start_timeout = 0
+  enabled = false
+  proxy_port = 0
+
+[screen]
+  clear_on_rebuild = false
+  keep_scroll = true
