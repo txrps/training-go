@@ -6,6 +6,7 @@ import (
 	"time"
 	"training-go/internal/config"
 	"training-go/internal/database"
+	"training-go/internal/handlers"
 
 	_ "training-go/docs"
 
@@ -61,6 +62,12 @@ func main() {
 	var router *gin.Engine = gin.Default()
 	router.SetTrustedProxies(nil)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	router.POST("/todos", handlers.CreateTodoHandlerGorm(gormDB))
+	router.GET("/todos", handlers.GetAllTodosHandlerGorm(gormDB))
+	router.GET("/todos/:id", handlers.GetTodoByIDHandlerGorm(gormDB))
+	router.PUT("/todos/:id", handlers.UpdateTodoHandlerGorm(gormDB))
+	router.DELETE("/todos/:id", handlers.DeleteTodoHandlerGorm(gormDB))
 
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,
