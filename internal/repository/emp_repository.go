@@ -102,7 +102,9 @@ func SearchEmpRepo(db *gorm.DB, params models.SearchEmpParams) ([]models.Employe
 			Where("LOWER(departments.name) LIKE ?", search)
 	}
 
-	if err := query.Find(&employees).Error; err != nil {
+	result := query.Find(&employees)
+	err := result.Error
+	if err != nil {
 		return nil, err
 	}
 
@@ -116,9 +118,9 @@ func CountEmpInDepartmentRepo(db *gorm.DB, department_name *string) ([]models.De
 	var results []models.DepartmentEmpCount
 
 	query := db.WithContext(ctx).
-		Model(&models.Employee{}).
-		Select("departments.id as department_id, departments.name as department_name, COUNT(employees.id) as emp_count").
-		Joins("LEFT JOIN departments ON employees.department_id = departments.id").
+		Model(&models.Department{}).
+		Select("departments.name as department_name, COUNT(employees.id) as emp_count").
+		Joins("LEFT JOIN employees ON employees.department_id = departments.id").
 		Group("departments.id, departments.name")
 
 	if department_name != nil && strings.TrimSpace(*department_name) != "" {
@@ -128,10 +130,6 @@ func CountEmpInDepartmentRepo(db *gorm.DB, department_name *string) ([]models.De
 
 	if err := query.Scan(&results).Error; err != nil {
 		return nil, err
-	}
-
-	if len(results) == 0 {
-		return nil, ErrTodoNotFound
 	}
 
 	return results, nil

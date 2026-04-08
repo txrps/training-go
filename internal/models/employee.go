@@ -39,7 +39,6 @@ type SearchEmpParams struct {
 }
 
 type DepartmentEmpCount struct {
-	DepartmentID   int64  `json:"department_id"`
 	DepartmentName string `json:"department_name"`
 	EmpCount       int64  `json:"emp_count"`
 }

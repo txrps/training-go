@@ -188,13 +188,6 @@ func CountEmpInDepartmentHandler(db *gorm.DB) gin.HandlerFunc {
 
 		results, err := repository.CountEmpInDepartmentRepo(db, input.DepartmentName)
 		if err != nil {
-			if errors.Is(err, repository.ErrTodoNotFound) {
-				c.JSON(http.StatusNotFound, gin.H{
-					"error": "department not found",
-				})
-				return
-			}
-
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error": ErrInternalServerError,
 			})
