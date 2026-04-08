@@ -1,5 +1,17 @@
 basePath: /
 definitions:
+  handlers.CreateEmployeeInput:
+    properties:
+      department_id:
+        type: integer
+      firstname:
+        type: string
+      lastname:
+        type: string
+    required:
+    - firstname
+    - lastname
+    type: object
   handlers.CreateTodoInput:
     properties:
       completed:
@@ -8,6 +20,31 @@ definitions:
         type: string
     required:
     - title
+    type: object
+  handlers.SearchEmpInDepartmentInput:
+    properties:
+      name:
+        type: string
+    type: object
+  handlers.SearchEmpInput:
+    properties:
+      firstname:
+        type: string
+      lastname:
+        type: string
+      name:
+        type: string
+    type: object
+  handlers.UpdateEmpInput:
+    properties:
+      department_id:
+        type: integer
+      firstname:
+        type: string
+      id:
+        type: integer
+      lastname:
+        type: string
     type: object
   handlers.UpdateTodoInput:
     properties:
@@ -27,6 +64,110 @@ info:
   title: Go Training API
   version: "1.0"
 paths:
+  /create_employee:
+    post:
+      consumes:
+      - application/json
+      description: Create a new emp
+      parameters:
+      - description: Employee payload
+        in: body
+        name: create_emp
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CreateEmployeeInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create emp
+      tags:
+      - employees
+  /employee_count:
+    post:
+      consumes:
+      - application/json
+      description: Get employee count per department with optional filter
+      parameters:
+      - description: Department filter
+        in: body
+        name: search_emp
+        schema:
+          $ref: '#/definitions/handlers.SearchEmpInDepartmentInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Count emp in department
+      tags:
+      - employees
+  /search_employee:
+    post:
+      consumes:
+      - application/json
+      description: Search a emp
+      parameters:
+      - description: Employee payload
+        in: body
+        name: search_emp
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.SearchEmpInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Search emp
+      tags:
+      - employees
   /todos:
     get:
       description: Retrieve all todo items
@@ -202,4 +343,45 @@ paths:
       summary: Update todo
       tags:
       - todos
+  /update_employee:
+    put:
+      consumes:
+      - application/json
+      description: Update a emp by ID
+      parameters:
+      - description: Update payload
+        in: body
+        name: update_emp
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UpdateEmpInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update emp
+      tags:
+      - employees
 swagger: "2.0"
