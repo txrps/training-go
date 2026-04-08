@@ -39,6 +39,5 @@ type SearchEmpParams struct {
 }
 
 type DepartmentEmpCount struct {
-	DepartmentName string `json:"department_name"`
-	EmpCount       int64  `json:"emp_count"`
+	EmpCount int64 `json:"emp_count"`
 }

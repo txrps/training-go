@@ -194,9 +194,20 @@ func CountEmpInDepartmentHandler(db *gorm.DB) gin.HandlerFunc {
 			return
 		}
 
+		// ถ้าหา department ไม่เจอเลย ให้ return emp_count = 0
+		if len(results) == 0 {
+			c.JSON(http.StatusOK, gin.H{
+				"status": "success",
+				"data": models.DepartmentEmpCount{
+					EmpCount: 0,
+				},
+			})
+			return
+		}
+
 		c.JSON(http.StatusOK, gin.H{
 			"status": "success",
-			"data":   results,
+			"data":   results[0],
 		})
 	}
 }
