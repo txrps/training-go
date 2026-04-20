@@ -7,6 +7,7 @@ import (
 	"training-go/internal/config"
 	"training-go/internal/database"
 	"training-go/internal/handlers"
+	"training-go/internal/storage"
 
 	_ "training-go/docs"
 
@@ -21,7 +22,7 @@ import (
 // @title           Go Training API
 // @version         1.0
 // @description     This is a training API using Gin + GORM + PostgreSQL
-// @host            localhost:3000
+// @host            localhost:8080
 // @BasePath        /
 
 // @contact.name    API Support
@@ -59,26 +60,36 @@ func main() {
 		log.Fatal("Failed to init GORM:", err)
 	}
 
+	// --- S3 / Object Storage Client ---
+	s3Client := storage.NewStorageClient()
+
 	var router *gin.Engine = gin.Default()
 	router.SetTrustedProxies(nil)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+	// --- Todos ---
 	router.POST("/todos", handlers.CreateTodoHandlerGorm(gormDB))
 	router.GET("/todos", handlers.GetAllTodosHandlerGorm(gormDB))
 	router.GET("/todos/:id", handlers.GetTodoByIDHandlerGorm(gormDB))
 	router.PUT("/todos/:id", handlers.UpdateTodoHandlerGorm(gormDB))
 	router.DELETE("/todos/:id", handlers.DeleteTodoHandlerGorm(gormDB))
 
+	// --- Employees ---
 	router.POST("/create_employee", handlers.CreateEmpHandler(gormDB))
 	router.PUT("/update_employee", handlers.UpdateEmpHandler(gormDB))
 	router.POST("/search_employee", handlers.SearchEmpHandler(gormDB))
 	router.POST("/employee_count", handlers.CountEmpInDepartmentHandler(gormDB))
 
+	// --- Files ---
+	router.POST("/files/upload", handlers.UploadFileHandler(s3Client))
+	router.GET("/files", handlers.GetFileHandler(s3Client))
+	router.DELETE("/files", handlers.DeleteFileHandler(s3Client))
+
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,
 		Handler:      router,
 		ReadTimeout:  10 * time.Second,
-		WriteTimeout: 10 * time.Second,
+		WriteTimeout: 30 * time.Second, // เพิ่มเป็น 30s เผื่อไฟล์ใหญ่
 	}
 
 	log.Printf("🚀 Server running on port %s", cfg.Port)

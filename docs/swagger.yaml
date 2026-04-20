@@ -53,7 +53,7 @@ definitions:
       title:
         type: string
     type: object
-host: localhost:3000
+host: localhost:8080
 info:
   contact:
     email: support@example.com
@@ -133,6 +133,110 @@ paths:
       summary: Count emp in department
       tags:
       - employees
+  /files:
+    delete:
+      description: Delete an object from storage by key
+      parameters:
+      - description: Object key
+        in: query
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a file
+      tags:
+      - files
+    get:
+      description: Get a presigned download URL for a stored object
+      parameters:
+      - description: Object key
+        in: query
+        name: key
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get file info / download URL
+      tags:
+      - files
+  /files/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload a file via multipart/form-data to MinIO / Dell ObjectScale
+      parameters:
+      - description: File to upload
+        in: formData
+        name: file
+        required: true
+        type: file
+      - description: Custom object key/path (optional)
+        in: formData
+        name: path
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Upload a file to object storage
+      tags:
+      - files
   /search_employee:
     post:
       consumes:
