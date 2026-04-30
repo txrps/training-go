@@ -69,6 +69,10 @@ func main() {
 	router.PUT("/todos/:id", handlers.UpdateTodoHandlerGorm(gormDB))
 	router.DELETE("/todos/:id", handlers.DeleteTodoHandlerGorm(gormDB))
 
+	router.POST("/employees", handlers.SaveEmployeeHandler(gormDB))
+	router.GET("/employees", handlers.GetEmployeeByFilterHandler(gormDB))
+	router.GET("/employees/department", handlers.GetEmployeeCountByDepartmentHandler(gormDB))
+
 	srv := &http.Server{
 		Addr:         ":" + cfg.Port,
 		Handler:      router,

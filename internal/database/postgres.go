@@ -25,6 +25,7 @@ type Config struct {
 
 func Connect(cfg Config) (*pgxpool.Pool, error) {
 	poolConfig, err := pgxpool.ParseConfig(cfg.DatabaseURL)
+	fmt.Println("DB USER:", poolConfig.ConnConfig.User)
 	if err != nil {
 		return nil, fmt.Errorf("parse DATABASE_URL failed: %w", err)
 	}

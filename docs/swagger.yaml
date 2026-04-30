@@ -1,5 +1,19 @@
 basePath: /
 definitions:
+  handlers.CreateEmployeeInput:
+    properties:
+      department_id:
+        type: integer
+      emp_id:
+        type: integer
+      firstname:
+        type: string
+      lastname:
+        type: string
+    required:
+    - firstname
+    - lastname
+    type: object
   handlers.CreateTodoInput:
     properties:
       completed:
@@ -27,6 +41,114 @@ info:
   title: Go Training API
   version: "1.0"
 paths:
+  /employees:
+    get:
+      description: Retrieve a single employee by filter
+      parameters:
+      - description: filter keyword
+        in: query
+        name: filter
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get employee by filter
+      tags:
+      - employees
+    post:
+      consumes:
+      - application/json
+      description: Create a new employee
+      parameters:
+      - description: Employee payload
+        in: body
+        name: employee
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CreateEmployeeInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create employee
+      tags:
+      - employees
+  /employees/department:
+    get:
+      description: Retrieve employee count by department with optional filter
+      parameters:
+      - description: filter keyword
+        in: query
+        name: filter
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get employee count by department
+      tags:
+      - employees
   /todos:
     get:
       description: Retrieve all todo items
